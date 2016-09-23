@@ -44,12 +44,12 @@ namespace ExCSS
             sb.Indent(friendlyFormat, indentation);
             sb.Append(Name);
             sb.Append(':');
-            _term?.ToString(sb);
+            if (_term != null) _term.ToString(sb);
             if (_important)
             {
                 sb.Append(" !important");
             }
-
+            
 
         }
     }
