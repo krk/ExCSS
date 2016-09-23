@@ -29,7 +29,7 @@
 		this.$name = null;
 		this.$htmlNode = htmlNode;
 		this.$self = self;
-		this.$name = (ss.isValue(name) ? $Shaman_Runtime_StringCache.toLowerFast(name) : null);
+		this.$name = (ss.isValue(name) ? $Shaman_Runtime_ValueStringExtensions.toLowerFast(name) : null);
 	};
 	$Shaman_$Dom_HtmlNode$DescendantsEnumerable.__typeName = 'Shaman.$Dom.HtmlNode$DescendantsEnumerable';
 	////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +129,8 @@
 		this.$_currentAttributeNameStartIndex = 0;
 		this.$_currentAttributeValueStartIndex = 0;
 		this.$1$TagField = null;
+		this.$_baseUrl = null;
+		this.$_pageUrl = null;
 		this.$_documentnode = this.$createNode$1(0, 0);
 	};
 	$Shaman_Dom_HtmlDocument.__typeName = 'Shaman.Dom.HtmlDocument';
@@ -154,6 +156,24 @@
 	};
 	$Shaman_Dom_HtmlDocument.$isWhiteSpace = function(c) {
 		return c === 10 || c === 13 || c === 32 || c === 9;
+	};
+	$Shaman_Dom_HtmlDocument.$getAbsoluteUrlInternal = function(baseUrl, relative) {
+		if (ss.startsWithString(relative, 'http:') || ss.startsWithString(relative, 'https:')) {
+			return new $System_Uri(relative);
+		}
+		if (ss.startsWithString(relative, '//')) {
+			return new $System_Uri((ss.isValue(baseUrl) ? baseUrl.scheme : 'https') + ':' + relative);
+		}
+		var firstColon = ss.indexOfString(relative, String.fromCharCode(58), 0, Math.min(relative.length, 15));
+		var firstSlash = relative.indexOf(String.fromCharCode(47));
+		var firstQuestionMark = relative.indexOf(String.fromCharCode(63));
+		if (firstColon !== -1 && (firstSlash === -1 || firstColon < firstSlash) && (firstQuestionMark === -1 || firstColon < firstQuestionMark)) {
+			return new $System_Uri(relative);
+		}
+		if (ss.isNullOrUndefined(baseUrl)) {
+			throw new ss.ArgumentException('Cannot create an absolute Uri without a base Uri.');
+		}
+		return new $System_Uri.$ctor1(baseUrl, relative);
 	};
 	global.Shaman.Dom.HtmlDocument = $Shaman_Dom_HtmlDocument;
 	////////////////////////////////////////////////////////////////////////////////
@@ -240,10 +260,10 @@
 								if ($Shaman_Dom_HtmlEntity.$entity.get_item(0) === 35) {
 									text2 = $Shaman_Dom_HtmlEntity.$entity.toString();
 									try {
-										text3 = $Shaman_Runtime_StringCache.toLowerFast($Shaman_Runtime_StringCache.substringCached(text2, 1).trim());
+										text3 = $Shaman_Runtime_ValueStringExtensions.toLowerFast($Shaman_Runtime_ValueStringExtensions.substringCached(text2, 1).trim());
 										if (ss.startsWithString(text3, 'x')) {
 											fromBase = 16;
-											text3 = $Shaman_Runtime_StringCache.substringCached(text3, 1);
+											text3 = $Shaman_Runtime_ValueStringExtensions.substringCached(text3, 1);
 										}
 										else {
 											fromBase = 10;
@@ -316,10 +336,10 @@
 					if (!flag) {
 						return text;
 					}
-					return $Shaman_Runtime_StringCache.toStringCached($Shaman_Dom_HtmlEntity.$sb);
+					return $Shaman_Runtime_ValueStringExtensions.toStringCached($Shaman_Dom_HtmlEntity.$sb);
 				}
 				case 7: {
-					num2 = $Shaman_Dom_HtmlEntity.$_entityValue[$Shaman_Runtime_StringCache.toStringCached($Shaman_Dom_HtmlEntity.$entity)];
+					num2 = $Shaman_Dom_HtmlEntity.$_entityValue[$Shaman_Runtime_ValueStringExtensions.toStringCached($Shaman_Dom_HtmlEntity.$entity)];
 					if (!ss.isNullOrUndefined(num2)) {
 						$Shaman_Dom_HtmlEntity.$sb.append$1(num2);
 						$state = 6;
@@ -351,7 +371,7 @@
 		var flag = false;
 		for (var i = 0; i < text.length; i++) {
 			var c = text.charCodeAt(i);
-			if (c === 38 || c === 60 || c === 62 || c === 34) {
+			if (c === 38 || c === 60 || c === 62 || c === 34 || c === 39) {
 				if (!flag) {
 					flag = true;
 					if (ss.isNullOrUndefined($Shaman_Dom_HtmlEntity.$sb)) {
@@ -374,6 +394,9 @@
 				else if (c === 34) {
 					$Shaman_Dom_HtmlEntity.$sb.append$5('&quot;');
 				}
+				else if (c === 39) {
+					$Shaman_Dom_HtmlEntity.$sb.append$5('&apos;');
+				}
 			}
 			else if (flag) {
 				$Shaman_Dom_HtmlEntity.$sb.append$1(c);
@@ -382,7 +405,7 @@
 		if (!flag) {
 			return text;
 		}
-		return $Shaman_Runtime_StringCache.toStringCached($Shaman_Dom_HtmlEntity.$sb);
+		return $Shaman_Runtime_ValueStringExtensions.toStringCached($Shaman_Dom_HtmlEntity.$sb);
 	};
 	global.Shaman.Dom.HtmlEntity = $Shaman_Dom_HtmlEntity;
 	////////////////////////////////////////////////////////////////////////////////
@@ -443,14 +466,14 @@
 		if (ss.isNullOrUndefined(name)) {
 			throw new ss.ArgumentNullException('name');
 		}
-		var htmlElementFlag = $Shaman_Runtime_$Utilities.$tryGetValue$1(String, $Shaman_Dom_HtmlElementFlag).call(null, $Shaman_Dom_HtmlNode.elementsFlags, $Shaman_Runtime_StringCache.toLowerFast(name));
+		var htmlElementFlag = $Shaman_Runtime_$Utilities.$tryGetValue$1(String, $Shaman_Dom_HtmlElementFlag).call(null, $Shaman_Dom_HtmlNode.elementsFlags, $Shaman_Runtime_ValueStringExtensions.toLowerFast(name));
 		return (htmlElementFlag & 1) !== 0;
 	};
 	$Shaman_Dom_HtmlNode.isClosedElement = function(name) {
 		if (ss.isNullOrUndefined(name)) {
 			throw new ss.ArgumentNullException('name');
 		}
-		var htmlElementFlag = $Shaman_Runtime_$Utilities.$tryGetValue$1(String, $Shaman_Dom_HtmlElementFlag).call(null, $Shaman_Dom_HtmlNode.elementsFlags, $Shaman_Runtime_StringCache.toLowerFast(name));
+		var htmlElementFlag = $Shaman_Runtime_$Utilities.$tryGetValue$1(String, $Shaman_Dom_HtmlElementFlag).call(null, $Shaman_Dom_HtmlNode.elementsFlags, $Shaman_Runtime_ValueStringExtensions.toLowerFast(name));
 		return (htmlElementFlag & 4) !== 0;
 	};
 	$Shaman_Dom_HtmlNode.isEmptyElement = function(name) {
@@ -466,12 +489,12 @@
 		if (63 === name.charCodeAt(0)) {
 			return true;
 		}
-		var htmlElementFlag = $Shaman_Runtime_$Utilities.$tryGetValue$1(String, $Shaman_Dom_HtmlElementFlag).call(null, $Shaman_Dom_HtmlNode.elementsFlags, $Shaman_Runtime_StringCache.toLowerFast(name));
+		var htmlElementFlag = $Shaman_Runtime_$Utilities.$tryGetValue$1(String, $Shaman_Dom_HtmlElementFlag).call(null, $Shaman_Dom_HtmlNode.elementsFlags, $Shaman_Runtime_ValueStringExtensions.toLowerFast(name));
 		return (htmlElementFlag & 2) !== 0;
 	};
 	$Shaman_Dom_HtmlNode.$getXmlComment = function(comment) {
 		var comment2 = comment.get_comment();
-		return ss.replaceAllString($Shaman_Runtime_StringCache.substringCached$2(comment2, 4, comment2.length - 7), '--', ' - -');
+		return ss.replaceAllString($Shaman_Runtime_ValueStringExtensions.substringCached$2(comment2, 4, comment2.length - 7), '--', ' - -');
 	};
 	$Shaman_Dom_HtmlNode.$getClasses = function(str) {
 		return new ss.IteratorBlockEnumerable(function() {
@@ -496,7 +519,7 @@
 								if (str.charCodeAt(i) !== 32) {
 									num = ((i === str.length - 1) ? -1 : str.indexOf(String.fromCharCode(32), i + 1));
 									if (num === -1) {
-										$result = $Shaman_Runtime_StringCache.substringCached(str, i);
+										$result = $Shaman_Runtime_ValueStringExtensions.substringCached(str, i);
 										$state = 5;
 										return true;
 									}
@@ -512,7 +535,7 @@
 							}
 							case 4: {
 								$state = -1;
-								$result = $Shaman_Runtime_StringCache.substringCached$2(str, i, num - i);
+								$result = $Shaman_Runtime_ValueStringExtensions.substringCached$2(str, i, num - i);
 								$state = 6;
 								return true;
 							}
@@ -565,7 +588,7 @@
 		try {
 			while ($t1.moveNext()) {
 				var current = $t1.current();
-				if ($Shaman_Runtime_StringCache.toLowerFast(current.get_tagName()).indexOf(name) !== -1) {
+				if ($Shaman_Runtime_ValueStringExtensions.toLowerFast(current.get_tagName()).indexOf(name) !== -1) {
 					var result = current;
 					return result;
 				}
@@ -635,43 +658,38 @@
 		};
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Shaman.Runtime.StringCache
-	var $Shaman_Runtime_StringCache = function() {
+	// Shaman.Runtime.ValueStringExtensions
+	var $Shaman_Runtime_ValueStringExtensions = function() {
 	};
-	$Shaman_Runtime_StringCache.__typeName = 'Shaman.Runtime.StringCache';
-	$Shaman_Runtime_StringCache.clearForCurrentThread = function() {
-		if (ss.isValue($Shaman_Runtime_StringCache.$cache)) {
-			$Shaman_Runtime_StringCache.$cache = null;
-		}
+	$Shaman_Runtime_ValueStringExtensions.__typeName = 'Shaman.Runtime.ValueStringExtensions';
+	$Shaman_Runtime_ValueStringExtensions.substringCached = function(str, startIndex) {
+		return $Shaman_Runtime_ValueStringExtensions.substringCached$2(str, startIndex, str.length - startIndex);
 	};
-	$Shaman_Runtime_StringCache.substringCached = function(str, startIndex) {
-		return $Shaman_Runtime_StringCache.substringCached$2(str, startIndex, str.length - startIndex);
+	$Shaman_Runtime_ValueStringExtensions.toStringCached = function(str) {
+		return $Shaman_Runtime_ValueStringExtensions.substringCached$3(str, 0, str.get_length());
 	};
-	$Shaman_Runtime_StringCache.toStringCached = function(str) {
-		return $Shaman_Runtime_StringCache.substringCached$3(str, 0, str.get_length());
+	$Shaman_Runtime_ValueStringExtensions.substringCached$1 = function(str, startIndex) {
+		return $Shaman_Runtime_ValueStringExtensions.substringCached$3(str, startIndex, str.get_length() - startIndex);
 	};
-	$Shaman_Runtime_StringCache.substringCached$1 = function(str, startIndex) {
-		return $Shaman_Runtime_StringCache.substringCached$3(str, startIndex, str.get_length() - startIndex);
-	};
-	$Shaman_Runtime_StringCache.substringCached$3 = function(str, startIndex, length) {
+	$Shaman_Runtime_ValueStringExtensions.substringCached$3 = function(str, startIndex, length) {
 		var text = str.toString();
 		if (startIndex !== 0 || length !== text.length) {
 			return text.substr(startIndex, length);
 		}
 		return text;
 	};
-	$Shaman_Runtime_StringCache.substringCached$2 = function(str, startIndex, length) {
+	$Shaman_Runtime_ValueStringExtensions.substringCached$2 = function(str, startIndex, length) {
 		if (length === 0) {
 			return '';
 		}
-		var num = $Shaman_Runtime_StringCache.$calculateHash(str.charCodeAt(startIndex), str.charCodeAt(startIndex + length - 1), length);
-		if (ss.isNullOrUndefined($Shaman_Runtime_StringCache.$cache)) {
-			$Shaman_Runtime_StringCache.$cache = new Array(6841);
+		var num = $Shaman_Runtime_ValueStringExtensions.$calculateHash(str.charCodeAt(startIndex), str.charCodeAt(startIndex + length - 1), length);
+		if (ss.isNullOrUndefined($Shaman_Runtime_ValueStringExtensions.$cache)) {
+			$Shaman_Runtime_ValueStringExtensions.$cache = new Array(6841);
 		}
-		var cacheItem = $Shaman_Runtime_StringCache.$cache[num];
+		var cacheItem = $Shaman_Runtime_ValueStringExtensions.$cache[num];
 		if (ss.isNullOrUndefined(cacheItem)) {
 			cacheItem = new $Shaman_Runtime_$CacheItem();
-			$Shaman_Runtime_StringCache.$cache[num] = cacheItem;
+			$Shaman_Runtime_ValueStringExtensions.$cache[num] = cacheItem;
 		}
 		var list = cacheItem.$list;
 		if (ss.isValue(list)) {
@@ -721,10 +739,10 @@
 		}
 		return text2;
 	};
-	$Shaman_Runtime_StringCache.$calculateHash = function(firstChar, lastChar, length) {
-		return (firstChar * 2971 + lastChar * 3847 + length) % 6841;
+	$Shaman_Runtime_ValueStringExtensions.$calculateHash = function(firstChar, lastChar, length) {
+		return (firstChar * 10609 + lastChar * 14407 + length) % 6841;
 	};
-	$Shaman_Runtime_StringCache.toLowerFast = function(str) {
+	$Shaman_Runtime_ValueStringExtensions.toLowerFast = function(str) {
 		var length = str.length;
 		var flag = true;
 		for (var i = 0; i < length; i++) {
@@ -739,13 +757,101 @@
 		}
 		return str;
 	};
-	global.Shaman.Runtime.StringCache = $Shaman_Runtime_StringCache;
+	global.Shaman.Runtime.ValueStringExtensions = $Shaman_Runtime_ValueStringExtensions;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.StringComparison
 	var $System_StringComparison = function() {
 	};
 	$System_StringComparison.__typeName = 'System.StringComparison';
 	global.System.StringComparison = $System_StringComparison;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Uri
+	var $System_Uri = function(url) {
+		$System_Uri.$ctor1.call(this, null, url);
+	};
+	$System_Uri.__typeName = 'System.Uri';
+	$System_Uri.$ctor1 = function(baseUrl, url) {
+		this.absoluteUri = null;
+		this.absolutePath = null;
+		this.scheme = null;
+		this.authority = null;
+		this.host = null;
+		this.query = null;
+		if (ss.isNullOrUndefined(url)) {
+			throw new ss.ArgumentNullException();
+		}
+		if (url.length === 0 && ss.isNullOrUndefined(baseUrl)) {
+			throw new ss.FormatException('Empty URL.');
+		}
+		var protocolLength = 0;
+		if (ss.startsWithString(url, 'http://')) {
+			this.scheme = $System_Uri.uriSchemeHttp;
+			protocolLength = 7;
+		}
+		else if (ss.startsWithString(url, 'https://')) {
+			this.scheme = $System_Uri.uriSchemeHttps;
+			protocolLength = 8;
+		}
+		else {
+			for (var i = 0; i < url.length; i++) {
+				var ch = url.charCodeAt(i);
+				if (ch === 58) {
+					this.scheme = $Shaman_Runtime_ValueStringExtensions.substringCached$2(url, 0, i);
+					this.absoluteUri = url;
+					return;
+				}
+				if (!($System_Uri.$isLetterOrDigit(ch) || ch === 45 || ch === 43)) {
+					break;
+				}
+			}
+			if (ss.isNullOrUndefined(baseUrl) || ss.isNullOrUndefined(baseUrl.authority)) {
+				throw new ss.ArgumentException('A non-empty, http/https base URL is required when the provided URL is relative.');
+			}
+			this.scheme = baseUrl.scheme;
+			protocolLength = this.scheme.length + 3;
+			if (url.charCodeAt(0) === 47) {
+				url = baseUrl.scheme + '://' + baseUrl.authority + url;
+			}
+			else {
+				var lastSlash = baseUrl.absolutePath.lastIndexOf(String.fromCharCode(47));
+				if (lastSlash === baseUrl.absolutePath.length - 1) {
+					url = baseUrl.scheme + '://' + baseUrl.authority + baseUrl.absolutePath + url;
+				}
+				else {
+					url = baseUrl.scheme + '://' + baseUrl.authority + $Shaman_Runtime_ValueStringExtensions.substringCached$2(baseUrl.absolutePath, 0, lastSlash + 1) + url;
+				}
+			}
+		}
+		this.absoluteUri = url;
+		var slash = url.indexOf(String.fromCharCode(47), protocolLength);
+		if (slash === -1) {
+			this.authority = $Shaman_Runtime_ValueStringExtensions.substringCached(url, protocolLength);
+			this.absolutePath = '/';
+		}
+		else {
+			this.authority = $Shaman_Runtime_ValueStringExtensions.substringCached$2(url, protocolLength, slash - protocolLength);
+			var q = url.indexOf(String.fromCharCode(63), slash);
+			if (q !== -1) {
+				this.query = $Shaman_Runtime_ValueStringExtensions.substringCached(url, q);
+				this.absolutePath = $Shaman_Runtime_ValueStringExtensions.substringCached$2(url, slash, q - slash);
+			}
+			else {
+				this.absolutePath = $Shaman_Runtime_ValueStringExtensions.substringCached(url, slash);
+			}
+		}
+		var p = this.authority.indexOf(String.fromCharCode(58));
+		this.host = ((p !== -1) ? $Shaman_Runtime_ValueStringExtensions.substringCached$2(this.authority, 0, p) : this.authority);
+	};
+	$System_Uri.$isLetterOrDigit = function(ch) {
+		return ch >= 48 && ch <= 57 || ch >= 97 && ch <= 122 || ch >= 65 && ch <= 90;
+	};
+	$System_Uri.$escapeDataString = function(value) {
+		return encodeURIComponent(value).replace(/%20/g, '+');
+	};
+	$System_Uri.$unescapeDataString = function(p) {
+		return decodeURI(p.replace('+', ' '));
+	};
+	global.System.Uri = $System_Uri;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Diagnostics.DebuggerDisplayAttribute
 	var $System_Diagnostics_DebuggerDisplayAttribute = function(text) {
@@ -874,7 +980,7 @@
 				return null;
 			}
 			if ((this.$_quoteType & 2) !== 0) {
-				return $Shaman_Runtime_StringCache.toLowerFast(this.$_name);
+				return $Shaman_Runtime_ValueStringExtensions.toLowerFast(this.$_name);
 			}
 			return this.$_name;
 		},
@@ -902,7 +1008,7 @@
 			if (ss.isNullOrUndefined(name)) {
 				throw new ss.ArgumentNullException('name');
 			}
-			var b = $Shaman_Runtime_StringCache.toLowerFast(name);
+			var b = $Shaman_Runtime_ValueStringExtensions.toLowerFast(name);
 			var attributeArray = this.$_ownernode.$_attributeArray;
 			var attributeCount = this.$_ownernode.$_attributeCount;
 			for (var i = 0; i < attributeCount; i++) {
@@ -1005,7 +1111,7 @@
 			if (ss.isNullOrUndefined(name)) {
 				throw new ss.ArgumentNullException('name');
 			}
-			var b = $Shaman_Runtime_StringCache.toLowerFast(name);
+			var b = $Shaman_Runtime_ValueStringExtensions.toLowerFast(name);
 			var attributeCount = this.$_ownernode.$_attributeCount;
 			var attributeArray = this.$_ownernode.$_attributeArray;
 			for (var i = 0; i < attributeCount; i++) {
@@ -1107,7 +1213,7 @@
 		},
 		get_tagName: function() {
 			if (ss.isNullOrUndefined(this.$_lowerName)) {
-				this.$_lowerName = (ss.isValue(this.$_originalName) ? $Shaman_Runtime_StringCache.toLowerFast(this.$_originalName) : '');
+				this.$_lowerName = (ss.isValue(this.$_originalName) ? $Shaman_Runtime_ValueStringExtensions.toLowerFast(this.$_originalName) : '');
 			}
 			return this.$_lowerName;
 		},
@@ -1712,22 +1818,23 @@
 			if (ss.isNullOrEmptyString(attributeValue)) {
 				return false;
 			}
-			if (attributeValue.indexOf(String.fromCharCode(32)) !== -1) {
-				var $t1 = ss.getEnumerator($Shaman_Dom_HtmlNode.$getClasses(attributeValue));
-				try {
-					while ($t1.moveNext()) {
-						var current = $t1.current();
-						if (ss.referenceEquals(current, class1)) {
-							return true;
-						}
-					}
-				}
-				finally {
-					$t1.dispose();
-				}
+			// avoids infinite loop later
+			if (class1.length === 0) {
 				return false;
 			}
-			return ss.referenceEquals(attributeValue, class1);
+			var idx = 0;
+			while (true) {
+				idx = attributeValue.indexOf(class1, idx);
+				if (idx === -1) {
+					return false;
+				}
+				var before = attributeValue.charCodeAt(idx - 1);
+				var after = attributeValue.charCodeAt(idx + class1.length);
+				if ((before === 32 || isNaN(before)) && (after === 32 || isNaN(after))) {
+					return true;
+				}
+				idx += class1.length;
+			}
 		},
 		$writeAttribute: function(outText, att) {
 			var text = ((att.get_$quoteType() === 0) ? '"' : "'");
@@ -1896,7 +2003,7 @@
 						if (this.$optionExtractErrorSourceText) {
 							var text = current.get_outerHtml();
 							if (text.length > this.$optionExtractErrorSourceTextMaxLength) {
-								text = $Shaman_Runtime_StringCache.substringCached$2(text, 0, this.$optionExtractErrorSourceTextMaxLength);
+								text = $Shaman_Runtime_ValueStringExtensions.substringCached$2(text, 0, this.$optionExtractErrorSourceTextMaxLength);
 							}
 						}
 					}
@@ -2404,7 +2511,7 @@
 								if (num2 === 62 || $Shaman_Dom_HtmlDocument.$isWhiteSpace(num2)) {
 									var htmlTextNode = ss.cast(this.$createNode$1(3, this.$_currentnode.$_outerstartindex + this.$_currentnode.$_outerlength), $Shaman_Dom_HtmlTextNode);
 									htmlTextNode.$_outerlength = this.$_index - 1 - htmlTextNode.$_outerstartindex;
-									htmlTextNode.set_text($Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex + this.$_currentnode.$_outerlength, htmlTextNode.$_outerlength));
+									htmlTextNode.set_text($Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex + this.$_currentnode.$_outerlength, htmlTextNode.$_outerlength));
 									htmlTextNode.$_pcdata = true;
 									this.$_currentnode.appendChild(htmlTextNode);
 									this.$pushNodeStart(1, this.$_index - 1);
@@ -2433,7 +2540,7 @@
 		$pushAttributeNameEnd: function(index) {
 			this.$_currentAttributeIndex++;
 			this.$attributesScratchpad[this.$_currentAttributeIndex] = new $Shaman_Dom_HtmlAttribute();
-			var text = $Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentAttributeNameStartIndex, index - this.$_currentAttributeNameStartIndex);
+			var text = $Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentAttributeNameStartIndex, index - this.$_currentAttributeNameStartIndex);
 			for (var i = 0; i < text.length; i++) {
 				var c = text.charCodeAt(i);
 				if (c >= 65 && c <= 90) {
@@ -2447,7 +2554,7 @@
 			this.$_currentAttributeNameStartIndex = index;
 		},
 		$pushAttributeValueEnd: function(index) {
-			var value = $Shaman_Dom_HtmlEntity.deEntitize($Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentAttributeValueStartIndex, index - this.$_currentAttributeValueStartIndex));
+			var value = $Shaman_Dom_HtmlEntity.deEntitize($Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentAttributeValueStartIndex, index - this.$_currentAttributeValueStartIndex));
 			this.$attributesScratchpad[this.$_currentAttributeIndex].set_value(value);
 		},
 		$flushAttributes: function() {
@@ -2480,14 +2587,14 @@
 					var htmlCommentNode = ((this.$_currentnode.$_nodetype === 2) ? ss.cast(this.$_currentnode, $Shaman_Dom_HtmlCommentNode) : null);
 					if (ss.isValue(htmlTextNode)) {
 						if (htmlTextNode.$_pcdata) {
-							htmlTextNode.set_text($Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex + 9, this.$_currentnode.$_outerlength - 9 - 3));
+							htmlTextNode.set_text($Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex + 9, this.$_currentnode.$_outerlength - 9 - 3));
 						}
 						else {
-							htmlTextNode.set_text($Shaman_Dom_HtmlEntity.deEntitize($Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex, this.$_currentnode.$_outerlength)));
+							htmlTextNode.set_text($Shaman_Dom_HtmlEntity.deEntitize($Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex, this.$_currentnode.$_outerlength)));
 						}
 					}
 					else {
-						htmlCommentNode.set_comment($Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex, this.$_currentnode.$_outerlength));
+						htmlCommentNode.set_comment($Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentnode.$_outerstartindex, this.$_currentnode.$_outerlength));
 					}
 					if (ss.isValue(this.$_lastparentnode)) {
 						this.$_lastparentnode.appendChild(this.$_currentnode);
@@ -2524,7 +2631,7 @@
 			return true;
 		},
 		$pushNodeNameEnd: function(index) {
-			this.$_currentnode.set_tagName($Shaman_Runtime_StringCache.substringCached$2(this.$text, this.$_currentNodeNameStartIndex, index - this.$_currentNodeNameStartIndex));
+			this.$_currentnode.set_tagName($Shaman_Runtime_ValueStringExtensions.substringCached$2(this.$text, this.$_currentNodeNameStartIndex, index - this.$_currentNodeNameStartIndex));
 			if (ss.getKeyCount(this.$openednodes) === 1 && this.$_isHtml) {
 				var tagName = this.$_currentnode.get_tagName();
 				if (tagName !== 'html' && !ss.startsWithString(tagName, '?') && !ss.startsWithString(tagName, '!')) {
@@ -2568,6 +2675,82 @@
 		},
 		writeTo: function(writer, writeDocumentNode) {
 			this.get_documentNode().$writeTo(writer, writeDocumentNode);
+		},
+		setOwnerDocumentRecursive: function(node) {
+			var $t1 = ss.getEnumerator(node.descendantsAndSelf());
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					item.$_ownerdocument = this;
+					item.$_streamposition = -1;
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+		},
+		get_baseUrl: function() {
+			if (ss.isValue(this.$_baseUrl)) {
+				return this.$_baseUrl;
+			}
+			var b = this.get_documentNode().getAttributeValue('base-url');
+			if (ss.isNullOrUndefined(b)) {
+				var $t1 = ss.getEnumerator(this.get_documentNode().descendantsAndSelf$1('base'));
+				try {
+					while ($t1.moveNext()) {
+						var basenode = $t1.current();
+						var h = basenode.getAttributeValue('href');
+						if (ss.isValue(h)) {
+							try {
+								this.$_baseUrl = $Shaman_Dom_HtmlDocument.$getAbsoluteUrlInternal(this.get_pageUrl(), h);
+								b = this.$_baseUrl.absoluteUri;
+							}
+							catch ($t2) {
+							}
+							break;
+						}
+					}
+				}
+				finally {
+					$t1.dispose();
+				}
+				if (ss.isNullOrUndefined(b)) {
+					this.$_baseUrl = this.get_pageUrl();
+					b = (ss.isValue(this.$_baseUrl) ? this.$_baseUrl.absoluteUri : '');
+				}
+				this.get_documentNode().setAttributeValue('base-url', b);
+			}
+			else {
+				if (ss.isNullOrEmptyString(b)) {
+					return null;
+				}
+				this.$_baseUrl = new $System_Uri(b);
+			}
+			return this.$_baseUrl;
+		},
+		get_pageUrl: function() {
+			if (ss.isValue(this.$_pageUrl)) {
+				return this.$_pageUrl;
+			}
+			var m = this.get_documentNode().getAttributeValue('document-url');
+			if (ss.isNullOrEmptyString(m)) {
+				return null;
+			}
+			this.$_pageUrl = new $System_Uri(m);
+			return this.$_pageUrl;
+		},
+		set_pageUrl: function(value) {
+			if (ss.isValue(value)) {
+				this.get_documentNode().setAttributeValue('document-url', value.absoluteUri);
+			}
+			else {
+				this.get_documentNode().get_attributes().remove$1('document-url');
+			}
+			this.$_pageUrl = value;
+		},
+		clearPageUrlCache: function() {
+			this.$_pageUrl = null;
+			this.$_baseUrl = null;
 		}
 	});
 	$Shaman_Dom_HtmlDocument.$ctor1.prototype = $Shaman_Dom_HtmlDocument.prototype;
@@ -2593,7 +2776,7 @@
 				return null;
 			}
 			var count = this.get_$_count();
-			nodeName = $Shaman_Runtime_StringCache.toLowerFast(nodeName);
+			nodeName = $Shaman_Runtime_ValueStringExtensions.toLowerFast(nodeName);
 			for (var i = 0; i < count; i++) {
 				if (ss.equalsT(items[i].get_tagName(), nodeName)) {
 					return items[i];
@@ -2769,8 +2952,30 @@
 	}, $Shaman_Dom_HtmlNode);
 	ss.initClass($Shaman_Runtime_$CacheItem, $asm, {});
 	ss.initClass($Shaman_Runtime_$Utilities, $asm, {});
-	ss.initClass($Shaman_Runtime_StringCache, $asm, {});
+	ss.initClass($Shaman_Runtime_ValueStringExtensions, $asm, {});
 	ss.initClass($System_StringComparison, $asm, {});
+	ss.initClass($System_Uri, $asm, {
+		toString: function() {
+			return this.absoluteUri;
+		},
+		getQueryParameter: function(name) {
+			var q = this.query;
+			if (ss.isNullOrUndefined(q)) {
+				return null;
+			}
+			var list = q.split(String.fromCharCode(38), 4096);
+			for (var i = 0; i < list.length; i++) {
+				var k = list[i].split(String.fromCharCode(61), 2);
+				if (k.length === 2) {
+					if (ss.referenceEquals($System_Uri.$unescapeDataString(k[0]), name)) {
+						return $System_Uri.$unescapeDataString(k[1]);
+					}
+				}
+			}
+			return null;
+		}
+	});
+	$System_Uri.$ctor1.prototype = $System_Uri.prototype;
 	ss.initClass($System_Diagnostics_DebuggerDisplayAttribute, $asm, {});
 	ss.initClass($System_IO_TextReader, $asm, { close: null, peek: null, read: null, read$1: null, readBlock: null, readLine: null, readToEnd: null, dispose: null }, null, [ss.IDisposable]);
 	ss.initClass($System_IO_StringReader, $asm, {
@@ -3007,9 +3212,9 @@
 	ss.setMetadata($Shaman_Dom_HtmlElementFlag, { enumFlags: true });
 	ss.setMetadata($Shaman_Dom_HtmlNode, { attr: [new $System_Diagnostics_DebuggerDisplayAttribute('Name: {OriginalName}}')] });
 	(function() {
-		$Shaman_Runtime_StringCache.$size = 6841;
-		$Shaman_Runtime_StringCache.$cache = null;
-		$Shaman_Runtime_StringCache.$tempReader = null;
+		$Shaman_Runtime_ValueStringExtensions.$size = 6841;
+		$Shaman_Runtime_ValueStringExtensions.$cache = null;
+		$Shaman_Runtime_ValueStringExtensions.$tempReader = null;
 	})();
 	(function() {
 		$Shaman_Dom_HtmlEntity.$_maxEntitySize = 0;
@@ -3272,6 +3477,10 @@
 		$Shaman_Dom_HtmlEntity.$addPair('rsaquo', 8250);
 		$Shaman_Dom_HtmlEntity.$addPair('euro', 8364);
 		$Shaman_Dom_HtmlEntity.$_maxEntitySize = 9;
+	})();
+	(function() {
+		$System_Uri.uriSchemeHttp = 'http';
+		$System_Uri.uriSchemeHttps = 'https';
 	})();
 	(function() {
 		$Shaman_Dom_HtmlDocument.$htmlExceptionRefNotChild = 'Reference node must be a child of this node';
