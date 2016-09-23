@@ -51,6 +51,7 @@
     <AssemblyOriginatorKeyFile>ExCSS.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Compatibility.cs" />
     <Compile Include="DocumentFunctionStringPair.cs" />
     <Compile Include="IToString.cs" />
     <Compile Include="Lexer.cs" />

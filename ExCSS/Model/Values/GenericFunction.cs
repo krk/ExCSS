@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using ExCSS.Model;
+#if SALTARELLE
+using StringBuilder = System.Text.Saltarelle.StringBuilder;
+#endif
 
 // ReSharper disable once CheckNamespace
 namespace ExCSS

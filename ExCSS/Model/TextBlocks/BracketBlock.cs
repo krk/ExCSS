@@ -1,6 +1,9 @@
 ﻿
 using Shaman.Runtime;
 using System.Text;
+#if SALTARELLE
+using StringBuilder = System.Text.Saltarelle.StringBuilder;
+#endif
 
 namespace ExCSS.Model.TextBlocks
 {

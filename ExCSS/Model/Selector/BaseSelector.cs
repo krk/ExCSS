@@ -3,7 +3,9 @@
 using Shaman.Runtime;
 using System.Text;
 using System;
-
+#if SALTARELLE
+using StringBuilder = System.Text.Saltarelle.StringBuilder;
+#endif
 namespace ExCSS
 {
     public abstract class BaseSelector
