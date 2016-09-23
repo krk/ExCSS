@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Saltarelle;
 using StringBuilder = System.Text.Saltarelle.StringBuilder;
 
-namespace Shaman.Runtime
+namespace ExCSS
 {
     internal static class ReseekableStringBuilder
     {
