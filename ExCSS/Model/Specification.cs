@@ -63,6 +63,11 @@
             return c >= 0x80 || IsUppercaseAscii(c) || IsLowercaseAscii(c) || c == Underscore;
         }
 
+        internal static bool IsNameOrDigitStart(this char c)
+        {
+            return IsNameStart(c) || IsDigit(c);
+        }
+
         internal static bool IsLineBreak(this char c)
         {
             //line feed, carriage return
