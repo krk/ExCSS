@@ -51,7 +51,8 @@ namespace ExCSS
         public override void ToString(StringBuilder sb, bool friendlyFormat, int indentation = 0)
         {
             sb.NewLineIndent(friendlyFormat, indentation);
-            _selector.ToString(sb);
+            if (_selector == null) sb.Append(".shaman-unparsable-selector2");
+            else _selector.ToString(sb);
             sb.Append('{');
             _declarations.ToString(sb, friendlyFormat, indentation);
             sb.NewLineIndent("}", friendlyFormat, indentation);
