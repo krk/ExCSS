@@ -34,7 +34,8 @@ namespace ExCSS
 
             if (_aggregateSelectorList == null || _aggregateSelectorList.Length == 0)
             {
-                return _currentSelector ?? SimpleSelector.All;
+                if (_currentSelector != null) return _currentSelector;
+                return new SimpleSelector(".shaman-unparsable-selector");
             }
 
             if (_currentSelector == null && _aggregateSelectorList.Length == 1)
