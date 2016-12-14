@@ -1,0 +1,82 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="excss">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//excss" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <excss>
+    <FileName>PrimitiveTerm.cs</FileName>
+    <ErrorCode>V3024</ErrorCode>
+    <Message>An odd precise comparison: k == s. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</Message>
+    <CodePrev>173977</CodePrev>
+    <CodeCurrent>12131</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </excss>
+  <excss>
+    <FileName>Specification.cs</FileName>
+    <ErrorCode>V3063</ErrorCode>
+    <Message>A part of conditional expression is always true if it is evaluated: c &gt;= _x_.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>448589287</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </excss>
+  <excss>
+    <FileName>StylesheetReader.cs</FileName>
+    <ErrorCode>V3072</ErrorCode>
+    <Message>The 'StylesheetReader' class containing IDisposable members does not itself implement IDisposable. Inspect: _reader.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2931691700</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </excss>
+  <excss>
+    <FileName>SelectorFactory.cs</FileName>
+    <ErrorCode>V3063</ErrorCode>
+    <Message>A part of conditional expression is always true if it is evaluated: _currentSelector == null.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>38347553</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </excss>
+  <excss>
+    <FileName>Enumerations.cs</FileName>
+    <ErrorCode>V3091</ErrorCode>
+    <Message>Empirical analysis. It is possible that a typo is present inside the string literal. The 'character' word is suspicious.</Message>
+    <CodePrev>3130589915</CodePrev>
+    <CodeCurrent>673723274</CodeCurrent>
+    <CodeNext>2719563336</CodeNext>
+  </excss>
+</NewDataSet>
