@@ -233,12 +233,11 @@ namespace ExCSS
             sb.Append(')');
         }
 
-        public bool Equals(HtmlColor other)
+        public bool Equals(HtmlColor o)
         {
-            HtmlColor o = other as HtmlColor;
             if (o == null)
                 return false;
-            return GetHashCode() == other.GetHashCode();
+            return GetHashCode() == o.GetHashCode();
         }
 
         private static Single HueToRgb(Single m1, Single m2, Single h)
