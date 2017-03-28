@@ -73,7 +73,7 @@ namespace ExCSS
                     SetParsingContext(ParsingContext.DataBlock);
                     continue;
                 }
-       
+
                 if (token.GrammarSegment == GrammarSegment.Delimiter && token.ToString() == "*")
                 {
                     _skipNextProperty = true;
@@ -258,7 +258,6 @@ namespace ExCSS
             switch (newState)
             {
                 case ParsingContext.InSelector:
-                    _lexer.IgnoreComments = true;
                     _lexer.IgnoreWhitespace = false;
                     _selectorFactory.ResetFactory();
                     break;
@@ -268,11 +267,9 @@ namespace ExCSS
                 case ParsingContext.InCondition:
                 case ParsingContext.InSingleValue:
                 case ParsingContext.InMediaValue:
-                    _lexer.IgnoreComments = true;
                     _lexer.IgnoreWhitespace = false;
                     break;
                 default:
-                    _lexer.IgnoreComments = true;
                     _lexer.IgnoreWhitespace = true;
                     break;
             }
@@ -288,6 +285,16 @@ namespace ExCSS
                     ? _activeRuleSets.Peek()
                     : null;
             }
+        }
+
+        private void ParseComment(CommentBlock block)
+        {
+            if (block.Comment == null)
+            {
+                return;
+            }
+
+            _styleSheet.Comments.Add(block.Comment);
         }
     }
 }

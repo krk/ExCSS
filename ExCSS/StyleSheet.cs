@@ -19,6 +19,7 @@ namespace ExCSS
         public StyleSheet()
         {
             _rules = new List<RuleSet>();
+            Comments = new List<string>();
             Errors = new List<StylesheetParseError>();
         }
 
@@ -26,6 +27,8 @@ namespace ExCSS
         {
             get { return _rules; }
         }
+
+        public IList<string> Comments { get; }
 
         public StyleSheet RemoveRule(int index)
         {
@@ -56,7 +59,7 @@ namespace ExCSS
             {
                 return Rules.Where(r => r is StyleRule).Cast<StyleRule>().ToList();
             }
-        } 
+        }
 
         public IList<CharacterSetRule> CharsetDirectives
         {

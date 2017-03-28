@@ -14,6 +14,15 @@ namespace ExCSS
     {
         private bool ParseTokenBlock(Block token)
         {
+            var comment = token as CommentBlock;
+
+            if (comment != null)
+            {
+                ParseComment(comment);
+
+                return true;
+            }
+
             switch (_parsingContext)
             {
                 case ParsingContext.DataBlock:

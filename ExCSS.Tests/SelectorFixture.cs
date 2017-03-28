@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
 
 namespace ExCSS.Tests
@@ -11,9 +12,13 @@ namespace ExCSS.Tests
         public void Parser_Reads_Hex_Color()
         {
             var parser = new Parser();
-			var css = parser.Parse("html{color:#000000;}");
+            var css = parser.Parse("html{color:#000000;}");
 
-            Assert.AreEqual("html{color:#000;}", css.ToString(false));
+            var result = new StringBuilder();
+
+            css.ToString(result, false);
+
+            Assert.AreEqual("html{color:#000;}", result.ToString());
         }
 
         [Test]
@@ -46,7 +51,7 @@ namespace ExCSS.Tests
 
             var rules = css.Rules;
 
-            Assert.AreEqual("button,.button,input[type=\"button\"]{}", rules[0].ToString()); 
+            Assert.AreEqual("button,.button,input[type=\"button\"]{}", rules[0].ToString());
         }
 
         [Test]

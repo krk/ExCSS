@@ -6,13 +6,20 @@ namespace ExCSS.Model.TextBlocks
         private readonly static CommentBlock OpenBlock;
         private readonly static CommentBlock CloseBlock;
 
+        public string Comment { get; set; }
+
         static CommentBlock()
         {
             OpenBlock = new CommentBlock { GrammarSegment = GrammarSegment.CommentOpen };
             CloseBlock = new CommentBlock { GrammarSegment = GrammarSegment.CommentClose };
         }
 
-        CommentBlock()
+        public CommentBlock(string comment)
+        {
+            Comment = comment;
+        }
+
+        private CommentBlock()
         {
         }
 

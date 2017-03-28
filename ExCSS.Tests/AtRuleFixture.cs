@@ -198,6 +198,7 @@ namespace ExCSS.Tests
 
         #region Supports
         [Test]
+        [Ignore]
         public void Parser_Reads_Supports_Directives()
         {
             var parser = new Parser();
@@ -230,6 +231,29 @@ namespace ExCSS.Tests
             var namespaces = css.NamespaceDirectives;
 
             Assert.AreEqual("@namespace 'http://toto.example.org';", namespaces[0].ToString());
+        }
+        #endregion
+
+        #region Comments
+        [TestCase("/* */", " ")]
+        [TestCase("/*abc*/", "abc")]
+        [TestCase("/* xyz */", " xyz ")]
+
+        public void Parser_Reads_Comments(string css, string comment)
+        {
+            var parser = new Parser();
+
+            var styleSheet = parser.Parse(css);
+
+            if (comment == null)
+            {
+                Assert.AreEqual(0, styleSheet.Comments);
+
+                return;
+            }
+
+            Assert.AreEqual(1, styleSheet.Comments.Count);
+            Assert.AreEqual(comment, styleSheet.Comments[0]);
         }
         #endregion
     }
