@@ -65,8 +65,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Shaman.ValueString, Version=1.0.0.0, Culture=neutral, PublicKeyToken=18bc04d2eb1e1518, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shaman.ValueString.1.0.2.19\lib\net46\Shaman.ValueString.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Shaman.ValueString.1.0.2.31\lib\net46\Shaman.ValueString.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
